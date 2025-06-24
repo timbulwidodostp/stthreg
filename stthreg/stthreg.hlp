@@ -1,0 +1,168 @@
+{smcl}
+{* *! version 1.0.0  20oct2007}{...}
+{cmd:help stthreg}{right: ({browse "http://www.stata-journal.com/article.html?article=st0257":SJ12-2: st0257})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 16 21 2}{...}
+{p2col :{hi: stthreg} {hline 2}}Fit the standard threshold regression model or the threshold regression cure-rate model{p_end}
+{p2colreset}{...}
+
+{title:Syntax}
+
+{p 8 15 2}
+{cmd:stthreg} {ifin}{cmd:,} {cmd:lny0(}{varlist}{cmd:)}
+{cmd:mu(}{varlist}{cmd:)} [{it:options}] 
+
+{synoptset 21 tabbed}{...}
+{synopthdr}
+{synoptline}
+{p2coldent :* {opt lny0(varlist)}}list covariates in linear regression link function for {cmd:lny0()}{p_end}
+{p2coldent :* {opt m:u(varlist)}}list covariates in linear regression link function for {cmd:mu()}{p_end}
+{synopt :{opt nocons:tant}}specify that no intercepts be included in linear regression link functions for {cmd:lny0()} and {cmd:mu()}{p_end}
+{synopt :{opt cure}}specify that model to be fit is a threshold regression cure-rate model{p_end}
+{synopt :{opt lgtp(varlist)}}list covariates in linear regression link
+function for {cmd:lgtp()} in the threshold regression cure-rate model; can be used only when {opt cure} is used{p_end}
+{synopt :{opt l:evel(#)}}set confidence level; default is {cmd:level(95)}{p_end}
+{synopt :{opt init(string)}}specify initialization values of regression coefficients in maximum likelihood iterations{p_end}
+{synopt :{opt nolo:g}}specify that iteration log of log likelihood not be displayed{p_end}
+{synopt :{it:{help stcox##maximize_options:maximize_options}}}control maximization process; seldom used{p_end}
+{synoptline}
+{p2colreset}{...}
+{p 4 6 2}* {cmd:lny0()} and {cmd:mu()} are required.
+
+
+{title:Description}
+
+{pstd}{cmd:stthreg} fits, via maximum likelihood, the threshold
+regression model on survival data.
+
+
+{title:Options}
+
+{phang}{opt lny0(varlist)} lists covariates in the linear combination of
+covariates for {cmd:lny0()}.  {cmd:lny0()} is required.
+
+{phang}{opt mu(varlist)} lists covariates in the linear combination of
+covariates for {cmd:mu()}.  {cmd:mu()} is required.
+
+{phang}{opt noconstant} specifies that no intercepts be included in the
+linear regression link functions for {cmd:lny0()} and {cmd:mu()}.
+
+{phang}{opt cure} specifies that the model to be fit is a threshold
+regression cure-rate model.
+
+{phang}{opt lgtp(varlist)} specifies independent variables that will be
+used in the linear regression function for {cmd:lgtp()} in the threshold
+regression cure-rate model.  This {cmd:lgtp()} option can be used only
+when the {cmd:cure} option is used.
+
+{phang}{opt level(#)}; see
+{helpb estimation options##level():[R] estimation options}.
+
+{phang}{opt init(string)} specifies initialization values of the
+regression coefficients in maximum likelihood iterations.  The syntax is
+the same as {cmd:ml init}, which is the command to set initial values in
+the maximum likelihood estimation routine of Stata.
+
+{phang}{opt nolog} specifies that the iteration log of the log
+likelihood not be displayed.
+
+{phang}{it:maximize_options}; see {helpb stcox##maximize_options:[ST] stcox}.
+
+
+{title:Example of fitting the standard threshold regression model}
+ 
+{pstd}Setup{p_end}
+{phang2}{cmd:. use melanoma}{p_end}
+
+{pstd}{cmd:stset} the data{p_end}
+{phang2}{cmd:. stset survtime, failure(status)}{p_end}
+
+{pstd}Fit the threshold regression model without parameter initializations{p_end}
+{phang2}{cmd:. stthreg, lny0(thick age sex) mu(thick age sex)}{p_end}
+
+{pstd}Fit the threshold regression model with parameters initializations{p_end}
+{phang2}{cmd:. stthreg, lny0(thick age sex) mu(thick age sex) init(lny0:_cons=0 lny0:sex=0 lny0:age=0 lny0:thick=0 mu:_cons=0 mu:sex=0 mu:age=0 mu:thick=0)}{p_end}
+
+{pstd}Fit the threshold regression model without any covariate{p_end}
+{phang2}{cmd:. stthreg, lny0() mu()}{p_end}
+
+
+{title:Example of fitting the threshold regression cure-rate model}
+ 
+{pstd}Setup{p_end}
+{phang2}{cmd:. use kidney, clear}{p_end}
+
+{pstd}{cmd:stset} the data{p_end}
+{phang2}{cmd:. stset time, failure(infection)}{p_end}
+
+{pstd}Fit the threshold regression cure-rate model{p_end}
+{phang2}{cmd:. xi: stthreg, lny0(i.group) mu(i.group) lgtp(i.group) cure}{p_end}
+
+
+{title:Saved results}
+
+{pstd}{cmd:stthreg} saves the following in {cmd:e()}:
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Scalars}{p_end}
+{synopt:{cmd:e(N)}}number of observations{p_end}
+{synopt:{cmd:e(df_m)}}model degrees of freedom{p_end}
+{synopt:{cmd:e(ll)}}log likelihood{p_end}
+{synopt:{cmd:e(chi2)}}chi-squared{p_end}
+{synopt:{cmd:e(p)}}significance{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Macros}{p_end}
+{synopt:{cmd:e(cmd)}}{cmd:stthreg}{p_end}
+{synopt:{cmd:e(depvar)}}name of dependent variable{p_end}
+{synopt:{cmd:e(chi2type)}}{cmd:Wald} or {cmd:LR}; type of model chi-squared test{p_end}
+{synopt:{cmd:e(vce)}}{cmd:oim}{p_end}
+{synopt:{cmd:e(opt)}}type of optimization{p_end}
+{synopt:{cmd:e(ml_method)}}type of {cmd:ml} method{p_end}
+{synopt:{cmd:e(technique)}}maximization technique{p_end}
+{synopt:{cmd:e(crittype)}}optimization criterion{p_end}
+{synopt:{cmd:e(properties)}}{cmd:b V}{p_end}
+{synopt:{cmd:e(predict)}}program used to implement {cmd:predict}{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2: Matrices}{p_end}
+{synopt:{cmd:e(b)}}coefficient vector{p_end}
+{synopt:{cmd:e(V)}}variance-covariance matrix of the estimators{p_end}
+
+{synoptset 15 tabbed}{...}
+{p2col 5 15 19 2:Functions}{p_end}
+{synopt:{cmd:e(sample)}}marks estimation sample{p_end}
+
+
+{title:Authors}
+
+{pstd}Tao Xiao{p_end}
+{pstd}The Ohio State University{p_end}
+{pstd}Columbus, OH{p_end}
+{pstd}xiao.51@osu.edu
+
+{pstd}G. A. Whitmore{p_end}
+{pstd}McGill University{p_end}
+{pstd}Montreal, Canada{p_end}
+{pstd}george.whitmore@mcgill.ca
+
+{pstd}Xin He{p_end}
+{pstd}University of Maryland{p_end}
+{pstd}College Park, MD{p_end}
+{pstd}xinhe@umd.edu
+
+{pstd}Mei-Ling Ting Lee{p_end}
+{pstd}University of Maryland{p_end}
+{pstd}College Park, MD{p_end}
+{pstd}mltlee@umd.edu
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 12, number 2: {browse "http://www.stata-journal.com/article.html?article=st0257":st0257}
+
+{p 7 14 2}Help:  {helpb trhr}, {helpb trpredict}, {helpb sttrkm} (if
+installed){p_end}

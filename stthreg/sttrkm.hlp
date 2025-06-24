@@ -1,0 +1,174 @@
+{smcl}
+{cmd:help sttrkm}{right: ({browse "http://www.stata-journal.com/article.html?article=st0257":SJ12-2: st0257})}
+{hline}
+
+{title:Title}
+
+{p2colset 5 15 17 2}{...}
+{p2col :{hi: sttrkm} {hline 2}}Diagnostic command for the standard threshold regression model and the threshold regression cure-rate model{p_end}
+{p2colreset}{...}
+
+
+{title:Syntax}
+
+{p 8 14 2}
+{cmd:sttrkm} [{it:if}] [{cmd:,} {opt lny0(varname)}
+    {opt mu(varname)}
+    {opt cure}
+    {opt lgtp(varname)}
+    {cmdab:nosh:ow}
+    {cmdab:sep:arate}
+    {cmd:obsopts(}{it:sttrkm_plot_options}{cmd:)}
+{cmd:obs}{it:#}{cmd:opts(}{it:sttrkm_plot_options}{cmd:)}
+{cmd:predopts(}{it:sttrkm_plot_options}{cmd:)}
+{cmd:pred}{it:#}{cmd:opts(}{it:sttrkm_plot_options}{cmd:)}
+{cmd:addplot(}{it:plot}{cmd:)}
+{it:twoway_options}
+{cmd:byopts(}{it:byopts}{cmd:)}]
+
+{synoptset 20}{...}
+{marker sttrkm_plot_options}{...}
+{synopthdr:sttrkm_plot_options}
+{synoptline}
+{synopt:{it:connect_options}}change look of connecting method{p_end}
+{synopt:{it:marker_options}}change look of markers (color, size, etc.){p_end}
+{synoptline}
+{p2colreset}{...}
+
+{p 4 6 2}
+You must {cmd:stset} your data before using {cmd:sttrkm};
+see {manhelp stset ST}.{p_end}
+{p 4 6 2}
+
+
+{title:Description}
+
+{pstd}For a categorical independent variable, the Kaplan-Meier
+nonparametric survival curve can be plotted for each categorical level
+of this variable.  If we include such a categorical independent variable
+as the only predictor in the threshold regression, survival curves for
+each level can also be predicted parametrically by the threshold
+regression model.  The command {cmd:sttrkm} overlays these two types of
+curves and provides a graphic goodness-of-fit diagnosis of the threshold
+regression model.  The closer the Kaplan-Meier nonparametric survival
+curves are to the predicted curves, the better the threshold regression
+model fits the data with this variable.  A counterpart command for the
+Cox model is {cmd:stcoxkm}.  Note that unlike {cmd:trhr} and
+{cmd:trpredict}, the {cmd:sttrkm} command is not a postestimation
+command, and hence the estimation command {cmd:stthreg} is not required
+before the {cmd:sttrkm} command.  However, you must {cmd:stset} your
+data before using {cmd:sttrkm}.
+
+
+{title:Options}
+
+{phang}{opt lny0(varname)} specifies the categorical predictor that will
+be used in the linear regression function for ln y_0 in the threshold
+regression model.  Note that either {cmd:lny0()} or {cmd:mu()} can be
+omitted if you do not want to use this categorical predictor for either
+ln y_0 or mu in the threshold regression model.  However, if both
+{cmd:lny0()} and {cmd:mu()} are used, the categorical predictor
+specified in these two options must be the same.
+
+{phang}{opt mu(varname)} specifies the categorical predictor that will
+be used in the linear regression function for mu in the threshold
+regression model.
+
+{phang}{cmd:cure} is used to diagnose the goodness of fit of a threshold
+regression cure-rate model.
+
+{phang}{opt lgtp(varname)} specifies the categorical predictor that will
+be used in the linear regression function for {cmd:lgtp()} in the
+threshold regression cure-rate model.  This {cmd:lgtp()} option can be
+used only when the {cmd:cure} option is used.  Note that when {cmd:cure}
+is used, {cmd:lny0()}, {cmd:mu()}, or {cmd:lgtp()} can be omitted
+if you do not want to use this categorical predictor for ln y_0,
+mu, or {cmd:lgtp()} in the threshold regression cure-rate model.
+However, if any of these three options is used, the categorical
+predictor specified in these options must be the same.
+
+{phang}{cmd:noshow} specifies not to show {cmd:st} setting information.
+
+{phang}{cmd:separate} specifies to draw separate plots for predicted and
+observed curves.
+
+{phang}{opt obsopts(sttrkm_plot_options)} affects rendition of the
+observed curve.
+
+{phang}{cmd:obs}{it:#}{cmd:opts(}{it:sttrkm_plot_options}{cmd:)} affects
+rendition of the {it:#}th observed curve; not allowed with
+{cmd:separate}.
+
+{phang}{opt predopts(sttrkm_plot_options)} affects rendition of the
+predicted curve.
+
+{phang}{cmd:pred}{it:#}{cmd:opts(}{it:sttrkm_plot_options}{cmd:)}
+affects rendition of the {it:#}th predicted curve; not allowed with
+{cmd:separate}.
+
+{phang}{opt addplot(plot)} specifies other plots to add to the generated
+graph.
+
+{phang}{it:twoway_options} are any options documented in 
+{manhelpi twoway_options G-3}.
+
+{phang}{opt byopts(byopts)} specifies how subgraphs are combined,
+labeled, etc.
+
+
+{title:Example of sttrkm for the standard threshold regression model}
+
+{pstd}Setup{p_end}
+{phang2}{cmd:. use melanoma}{p_end}
+
+{pstd}{cmd:stset} the data{p_end}
+{phang2}{cmd:. stset survtime, failure(status)}{p_end}
+
+{pstd}Run {cmd:sttrkm} command for {cmd:ici} variable{p_end}
+{phang2}{cmd:. sttrkm, lny0(ici) mu(ici) noshow separate}{p_end}
+
+
+{title:Examples of sttrkm for the standard threshold regression model and the threshold regression cure-rate model}
+
+{pstd}Setup{p_end}
+{phang2}{cmd:. use kidney, clear}{p_end}
+
+{pstd}{cmd:stset} the data{p_end}
+{phang2}{cmd:. stset time, failure(infection)}{p_end}
+
+{pstd}Run {cmd:sttrkm} command for {cmd:group} variable with a standard threshold regression model{p_end}
+{phang2}{cmd:. sttrkm, lny0(group) mu(group) noshow separate title("TR Predicted v.s. Observed")}{p_end}
+
+{pstd}Run {cmd:sttrkm} command for {cmd:group} variable with a threshold regression cure-rate model{p_end}
+{phang2}{cmd:. sttrkm, lny0(group) mu(group) lgtp(group) cure noshow separate title("TR Cure-rate Predicted v.s. Observed")}{p_end}
+
+
+{title:Authors}
+
+{pstd}Tao Xiao{p_end}
+{pstd}The Ohio State University{p_end}
+{pstd}Columbus, OH{p_end}
+{pstd}xiao.51@osu.edu
+
+{pstd}G. A. Whitmore{p_end}
+{pstd}McGill University{p_end}
+{pstd}Montreal, Canada{p_end}
+{pstd}george.whitmore@mcgill.ca
+
+{pstd}Xin He{p_end}
+{pstd}University of Maryland{p_end}
+{pstd}College Park, MD{p_end}
+{pstd}xinhe@umd.edu
+
+{pstd}Mei-Ling Ting Lee{p_end}
+{pstd}University of Maryland{p_end}
+{pstd}College Park, MD{p_end}
+{pstd}mltlee@umd.edu
+
+
+{title:Also see}
+
+{p 4 14 2}Article:  {it:Stata Journal}, volume 12, number 2: {browse "http://www.stata-journal.com/article.html?article=st0257":st0257}
+
+{p 7 14 2}Help:  {helpb trhr}, {helpb trpredict}, {helpb stthreg} (if
+installed){p_end}
