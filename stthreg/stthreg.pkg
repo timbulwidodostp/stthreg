@@ -1,4 +1,21 @@
-D 'DEA': Data envelopment analysis
+D 'stthreg': Threshold regression for time-to-event analysis Use stthreg With STATA 19
 D
-F dea.ado
-F dea.sthlp
+F stthreg.ado
+F stthreg.hlp
+F stthregc.ado
+F stthregc_lf.ado
+F stthregs.ado
+F stthregs_lf.ado
+F sttrkm.ado
+F sttrkm.hlp
+F sttrkmc.ado
+F sttrkms.ado
+F trbootstrap.ado
+F trhr.ado
+F trhr.hlp
+F trhrc.ado
+F trhrs.ado
+F trpredict.ado
+F trpredict.hlp
+F trpredictc.ado
+F trpredicts.ado
